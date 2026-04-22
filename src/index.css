@@ -9,6 +9,44 @@ body {
   color: white;
 }
 
+/* Mobile adaptation: zoom down the 1440px fixed-width layout */
+@media (max-width: 1439px) {
+  .dex-app-inner {
+    zoom: calc(100vw / 1440);
+  }
+}
+/* Firefox fallback (zoom not fully supported in older versions) */
+@supports (-moz-appearance: none) {
+  @media (max-width: 1439px) {
+    .dex-app-root {
+      overflow-x: hidden;
+    }
+    .dex-app-inner {
+      zoom: 1;
+      transform: scale(calc(100vw / 1440));
+      transform-origin: top left;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  /* Ensure chat widget stays responsive on mobile */
+  .dex-chat-window {
+    width: calc(100vw - 20px) !important;
+    right: 10px !important;
+    bottom: 76px !important;
+    max-height: 70vh !important;
+  }
+  .dex-chat-fab {
+    bottom: 16px !important;
+    right: 16px !important;
+    padding: 10px 16px !important;
+  }
+  .dex-fab-label {
+    display: none;
+  }
+}
+
 
 
 /* Magic Figma-Targeted Hover Animations */

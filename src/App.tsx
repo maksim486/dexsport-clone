@@ -7634,8 +7634,8 @@ export function Component111OverviewWalletIsntConnected() {
 export default function App() {
 
   return (
-    <div className="min-h-screen bg-[#0c0713] w-full overflow-x-hidden flex justify-center pb-[100px]">
-      <div className="w-[1440px] relative shrink-0">
+    <div className="dex-app-root min-h-screen bg-[#0c0713] w-full overflow-x-hidden flex justify-center pb-[100px]">
+      <div className="dex-app-inner w-[1440px] relative shrink-0">
         <>
           <Preloader />
           <Component111OverviewWalletIsntConnected />
