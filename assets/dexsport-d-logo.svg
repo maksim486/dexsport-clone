@@ -1,17 +1,4 @@
 <svg width="500" height="518" viewBox="0 0 500 518" overflow="hidden" fill="none" xmlns="http://www.w3.org/2000/svg">
-<style>
-
-svg {
-    animation: float-anim 4s ease-in-out infinite;
-    transform-origin: center;
-}
-@keyframes float-anim {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-    100% { transform: translateY(0px); }
-}
-
-</style>
 
 <mask id="mask0_48:74" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="518">
 <mask id="path-1-inside-1_48:74" fill="white">
