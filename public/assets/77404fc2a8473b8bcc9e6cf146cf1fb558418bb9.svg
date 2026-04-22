@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 17.83 20.0001" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Trust">
+<path id="Vector" d="M0 2.88907L8.91474 0V20.0001C2.54697 17.3331 0 12.2221 0 9.33364V2.88907Z" fill="var(--fill-0, #0500FF)"/>
+<path id="Vector_2" d="M17.83 2.88907L8.91528 0V20.0001C15.283 17.3331 17.83 12.2221 17.83 9.33364V2.88907Z" fill="url(#paint0_linear_35581_37710)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_35581_37710" x1="15.462" y1="-1.40054" x2="8.7639" y2="19.7382" gradientUnits="userSpaceOnUse">
+<stop offset="0.02" stop-color="#0000FF"/>
+<stop offset="0.08" stop-color="#0094FF"/>
+<stop offset="0.16" stop-color="#48FF91"/>
+<stop offset="0.42" stop-color="#0094FF"/>
+<stop offset="0.68" stop-color="#0038FF"/>
+<stop offset="0.9" stop-color="#0500FF"/>
+</linearGradient>
+</defs>
+</svg>

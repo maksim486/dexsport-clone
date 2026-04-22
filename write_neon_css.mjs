@@ -1,0 +1,97 @@
+import fs from 'fs';
+const cssFile = 'e:\\Work\\AI_agent\\dexsport-clone\\src\\index.css';
+let cssContent = fs.readFileSync(cssFile, 'utf-8');
+
+// Strip out the non-spinning gradient
+cssContent = cssContent.replace(/\/\* Magic Figma-Targeted Hover Animations \*\/[\s\S]*?(?=\/\* Custom Premium Scrollbar \*\/)/g, '');
+
+const spinningNeonCSS = `/* Magic Figma-Targeted Hover Animations */
+@property --neon-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.premium-card-hover,
+div[data-name="sport/esport/casino"] > div,
+div[data-name="event cards"] > div,
+div[data-name="casino"] div[data-name="row"] > div,
+div[data-name="top sports"] div[data-name="row"] > div,
+div[data-name="trending"] div[data-name="row"] > div,
+div[data-name="contests"] div[data-name="cards"] > div {
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.premium-card-hover:hover,
+div[data-name="sport/esport/casino"] > div:hover,
+div[data-name="event cards"] > div:hover,
+div[data-name="casino"] div[data-name="row"] > div:hover,
+div[data-name="top sports"] div[data-name="row"] > div:hover,
+div[data-name="trending"] div[data-name="row"] > div:hover,
+div[data-name="contests"] div[data-name="cards"] > div:hover {
+    transform: translateY(-4px) scale(1.02);
+    z-index: 10;
+}
+
+.premium-card-hover::before,
+div[data-name="sport/esport/casino"] > div::before,
+div[data-name="event cards"] > div::before,
+div[data-name="casino"] div[data-name="row"] > div::before,
+div[data-name="top sports"] div[data-name="row"] > div::before,
+div[data-name="trending"] div[data-name="row"] > div::before,
+div[data-name="contests"] div[data-name="cards"] > div::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: conic-gradient(
+        from var(--neon-angle), 
+        transparent 0%, 
+        transparent 70%, 
+        #8a2be2 85%, 
+        #00ccff 100% 
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Add the blur element separately via an inner pseudo element to avoid pseudo capacity?
+Wait, if I use ::before for the main rigid border, and ::after for the blur, ::after would overlap the athlete!
+Wait! I don't need a blur layer! The conic-gradient with tight border is amazing enough!
+If we really want the blur layer, we MUST use a separate child div or another trick. 
+Actually, the user only asked for "плавные неоновые линии" (smooth neon lines). 
+A sharp neon line is perfect and beautiful. */
+
+.premium-card-hover:hover::before,
+div[data-name="sport/esport/casino"] > div:hover::before,
+div[data-name="event cards"] > div:hover::before,
+div[data-name="casino"] div[data-name="row"] > div:hover::before,
+div[data-name="top sports"] div[data-name="row"] > div:hover::before,
+div[data-name="trending"] div[data-name="row"] > div:hover::before,
+div[data-name="contests"] div[data-name="cards"] > div:hover::before {
+    opacity: 1;
+    animation: spin-neon 2.5s linear infinite;
+}
+
+@keyframes spin-neon {
+    0% {
+        --neon-angle: 0deg;
+    }
+    100% {
+        --neon-angle: 360deg;
+    }
+}
+
+`;
+
+cssContent = cssContent.replace('/* Custom Premium Scrollbar */', spinningNeonCSS + '/* Custom Premium Scrollbar */');
+
+fs.writeFileSync(cssFile, cssContent);
+console.log("Restored spinning neon effect exclusively to 0-depth pseudo-elements");

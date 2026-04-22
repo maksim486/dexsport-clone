@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 331 175" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Cards / Product cards">
+<rect width="331" height="175" fill="var(--fill-0, #0C0713)"/>
+<rect x="0.430913" y="0.430913" width="330.138" height="174.138" stroke="url(#paint0_linear_35581_38225)" stroke-opacity="0.3" stroke-width="0.861826"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_35581_38225" x1="196.945" y1="5.75658" x2="172.365" y2="174.726" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0.3"/>
+</linearGradient>
+</defs>
+</svg>
