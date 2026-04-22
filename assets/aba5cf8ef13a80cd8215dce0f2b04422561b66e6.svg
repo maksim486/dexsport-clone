@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 8.89616 5.78229" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1321315001">
+<path id="Rectangle 60" fill-rule="evenodd" clip-rule="evenodd" d="M0.54821 3.28059C0.292298 3.11695 0.292298 2.74313 0.54821 2.57949L4.358 0.143337C4.49466 0.0559485 4.66965 0.0559486 4.80631 0.143337L8.6161 2.57949C8.87201 2.74313 8.87201 3.11695 8.6161 3.28059L4.80631 5.71675C4.66965 5.80414 4.49466 5.80414 4.358 5.71675L0.54821 3.28059Z" fill="var(--fill-0, #FDD216)"/>
+<g id="Oval 2">
+<path id="Mask" fill-rule="evenodd" clip-rule="evenodd" d="M4.58315 4.79441C5.62518 4.79441 6.46992 3.95961 6.46992 2.92984C6.46992 1.90006 5.62518 1.06527 4.58315 1.06527C3.54111 1.06527 2.69638 1.90006 2.69638 2.92984C2.69638 3.95961 3.54111 4.79441 4.58315 4.79441Z" fill="var(--fill-0, #053087)"/>
+<mask id="mask0_35581_38146" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="2" y="1" width="5" height="4">
+<path id="Mask_2" fill-rule="evenodd" clip-rule="evenodd" d="M4.58315 4.79441C5.62518 4.79441 6.46992 3.95961 6.46992 2.92984C6.46992 1.90006 5.62518 1.06527 4.58315 1.06527C3.54111 1.06527 2.69638 1.90006 2.69638 2.92984C2.69638 3.95961 3.54111 4.79441 4.58315 4.79441Z" fill="var(--fill-0, white)"/>
+</mask>
+<g mask="url(#mask0_35581_38146)">
+<path id="Line" d="M2.47189 2.44288C2.76812 2.20582 3.72405 2.43039 4.61638 2.66562C5.50871 2.90086 6.43939 3.39391 6.67635 3.68309" stroke="var(--stroke-0, white)" stroke-width="0.832185" stroke-linecap="square"/>
+</g>
+</g>
+</g>
+</svg>
