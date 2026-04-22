@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatWidget.css';
 
-const AGENT_URL = import.meta.env.VITE_AGENT_URL || 'http://localhost:8000';
+const AGENT_URL = import.meta.env.VITE_AGENT_URL || 'https://drippy-pasta-amaze.ngrok-free.dev';
 const LOGO_SRC = '/dexsport-clone/assets/dexsport-d-logo.svg';
 
 interface Message {
@@ -50,7 +50,10 @@ export default function ChatWidget() {
 
       const resp = await fetch(`${AGENT_URL}/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '1',
+        },
         body: JSON.stringify({ message: text, history }),
       });
 
