@@ -23,6 +23,7 @@ function getTime() {
 }
 
 export default function ChatWidget() {
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -30,8 +31,15 @@ export default function ChatWidget() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 3200);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  if (!mounted) return null;
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
