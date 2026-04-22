@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import './ChatWidget.css';
 
 const AGENT_URL = import.meta.env.VITE_AGENT_URL || 'https://drippy-pasta-amaze.ngrok-free.dev';
-const LOGO_SRC = '/dexsport-clone/assets/dexsport-d-logo.svg';
+const LOGO_SRC = '/dexsport-clone/assets/dexsport-d-logo.svg?v=2';
 
 interface Message {
   role: 'user' | 'assistant';
