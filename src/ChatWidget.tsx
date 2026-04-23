@@ -157,7 +157,7 @@ export default function ChatWidget() {
           {/* Header */}
           <div className="dex-chat-header">
             <div className="dex-chat-avatar"><img src={LOGO_SRC} alt="Dexsport" className="dex-avatar-logo" /></div>
-            <div>
+            <div className="dex-chat-header-info">
               <div className="dex-chat-name">Dexsport AI</div>
               <div className="dex-chat-status">
                 <span className="dex-status-dot" />
