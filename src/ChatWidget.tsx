@@ -23,8 +23,10 @@ function getTime() {
 }
 
 function renderMarkdown(text: string): React.ReactNode {
-  // Join split markdown links: ]\n( → ](
-  const normalized = text.replace(/\]\s*\n\s*\(/g, '](');
+  // Join split markdown links: ]\n( → ](  and force correct domain
+  const normalized = text
+    .replace(/\]\s*\n\s*\(/g, '](')
+    .replace(/dexsport\.com/gi, 'dexsport.io');
   const lines = normalized.split('\n');
   const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
 
