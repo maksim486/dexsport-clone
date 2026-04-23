@@ -332,23 +332,20 @@
 
 /* ---------- Quick Buttons ---------- */
 .dex-quick-btns {
-  padding: 4px 18px 14px;
+  padding: 8px 18px 12px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease, transform 0.25s ease;
+  transform-origin: bottom center;
 }
 .dex-quick-btns--visible {
-  max-height: 400px;
   opacity: 1;
+  transform: translateY(0);
 }
 .dex-quick-btns--hidden {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  pointer-events: none;
+  display: none;
 }
 .dex-quick-btn {
   padding: 8px 16px;

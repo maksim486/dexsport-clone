@@ -100,13 +100,12 @@ export default function ChatWidget() {
 
   if (!mounted) return null;
 
-  const rotateQuickButtons = (justAsked?: string) => {
-    setUsedQuestions(prev => {
-      const next = new Set(prev);
-      if (justAsked) next.add(justAsked);
-      setQuickButtons(pickRandom(ALL_QUICK_BUTTONS, 3, next, b => b.text));
-      return next;
-    });
+  const handleInputFocus = () => {
+    setInputFocused(true);
+    const nextUsed = new Set(usedQuestions);
+    quickButtons.forEach(b => nextUsed.add(b.text));
+    setUsedQuestions(nextUsed);
+    setQuickButtons(pickRandom(ALL_QUICK_BUTTONS, 3, nextUsed, b => b.text));
   };
 
   const sendMessage = async (text: string) => {
@@ -115,7 +114,6 @@ export default function ChatWidget() {
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
-    rotateQuickButtons(text);
 
     const assistantMsg: Message = { role: 'assistant', content: '', time: getTime() };
     setMessages(prev => [...prev, assistantMsg]);
@@ -281,7 +279,7 @@ export default function ChatWidget() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
-              onFocus={() => setInputFocused(true)}
+              onFocus={handleInputFocus}
               onBlur={() => setTimeout(() => setInputFocused(false), 150)}
               disabled={loading}
             />
