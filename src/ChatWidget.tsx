@@ -11,12 +11,33 @@ interface Message {
   time?: string;
 }
 
-const QUICK_BUTTONS = [
+const ALL_QUICK_BUTTONS = [
   { icon: '🎮', text: 'Что такое Dexsport?' },
   { icon: '🚀', text: 'Как начать играть?' },
   { icon: '🎁', text: 'Какие бонусы есть?' },
   { icon: '💳', text: 'Как пополнить счёт?' },
+  { icon: '💸', text: 'Как вывести деньги?' },
+  { icon: '⚽', text: 'На какие виды спорта можно ставить?' },
+  { icon: '🎰', text: 'Какие есть казино-игры?' },
+  { icon: '🕹️', text: 'Какой киберспорт доступен?' },
+  { icon: '🦊', text: 'Как подключить MetaMask?' },
+  { icon: '🔐', text: 'Что такое Web3-кошелёк?' },
+  { icon: '🪙', text: 'Какие криптовалюты принимаются?' },
+  { icon: '📱', text: 'Есть ли мобильное приложение?' },
+  { icon: '💎', text: 'Что такое VIP-программа?' },
+  { icon: '🏆', text: 'Как работают турниры?' },
+  { icon: '🎯', text: 'Что такое фрибет?' },
+  { icon: '📈', text: 'Как считаются коэффициенты?' },
+  { icon: '🆘', text: 'Как связаться с поддержкой?' },
+  { icon: '🔒', text: 'Насколько безопасно играть?' },
 ];
+
+function pickRandom<T>(arr: T[], n: number, exclude: Set<string> = new Set(), key: (x: T) => string): T[] {
+  const available = arr.filter(x => !exclude.has(key(x)));
+  const pool = available.length >= n ? available : arr;
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
 
 function getTime() {
   return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
@@ -61,6 +82,10 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [usedQuestions, setUsedQuestions] = useState<Set<string>>(new Set());
+  const [quickButtons, setQuickButtons] = useState(() =>
+    pickRandom(ALL_QUICK_BUTTONS, 3, new Set(), b => b.text)
+  );
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -74,12 +99,22 @@ export default function ChatWidget() {
 
   if (!mounted) return null;
 
+  const rotateQuickButtons = (justAsked?: string) => {
+    setUsedQuestions(prev => {
+      const next = new Set(prev);
+      if (justAsked) next.add(justAsked);
+      setQuickButtons(pickRandom(ALL_QUICK_BUTTONS, 3, next, b => b.text));
+      return next;
+    });
+  };
+
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
     const userMsg: Message = { role: 'user', content: text, time: getTime() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
+    rotateQuickButtons(text);
 
     const assistantMsg: Message = { role: 'assistant', content: '', time: getTime() };
     setMessages(prev => [...prev, assistantMsg]);
@@ -219,15 +254,18 @@ export default function ChatWidget() {
           </div>
 
           {/* Quick Buttons */}
-          {isWelcome && (
-            <div className="dex-quick-btns">
-              {QUICK_BUTTONS.map(btn => (
-                <button key={btn.text} className="dex-quick-btn" onClick={() => sendMessage(btn.text)}>
-                  {btn.icon} {btn.text}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="dex-quick-btns">
+            {quickButtons.map(btn => (
+              <button
+                key={btn.text}
+                className="dex-quick-btn"
+                onClick={() => sendMessage(btn.text)}
+                disabled={loading}
+              >
+                {btn.icon} {btn.text}
+              </button>
+            ))}
+          </div>
 
           {/* Input */}
           <div className="dex-chat-input-row">
