@@ -86,7 +86,9 @@ export default function ChatWidget() {
   const [quickButtons, setQuickButtons] = useState(() =>
     pickRandom(ALL_QUICK_BUTTONS, 3, new Set(), b => b.text)
   );
+  const [atBottom, setAtBottom] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 3200);
@@ -96,6 +98,13 @@ export default function ChatWidget() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleScroll = () => {
+    const el = messagesRef.current;
+    if (!el) return;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    setAtBottom(distanceFromBottom < 60);
+  };
 
   if (!mounted) return null;
 
@@ -203,7 +212,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="dex-chat-messages">
+          <div className="dex-chat-messages" ref={messagesRef} onScroll={handleScroll}>
             {isWelcome && (
               <div className="dex-welcome">
                 <div className="dex-welcome-avatar"><img src={LOGO_SRC} alt="Dexsport" className="dex-welcome-logo" /></div>
@@ -254,7 +263,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Quick Buttons */}
-          <div className="dex-quick-btns">
+          <div className={`dex-quick-btns ${atBottom ? 'dex-quick-btns--visible' : 'dex-quick-btns--hidden'}`}>
             {quickButtons.map(btn => (
               <button
                 key={btn.text}
