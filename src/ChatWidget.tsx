@@ -23,16 +23,20 @@ function getTime() {
 }
 
 function renderMarkdown(text: string): React.ReactNode {
-  const lines = text.split('\n');
+  // Join split markdown links: ]\n( → ](
+  const normalized = text.replace(/\]\s*\n\s*\(/g, '](');
+  const lines = normalized.split('\n');
+  const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+
   return lines.map((line, lineIdx) => {
     const parts: React.ReactNode[] = [];
-    const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
     let lastIdx = 0;
     let match: RegExpExecArray | null;
     let key = 0;
+    regex.lastIndex = 0;
     while ((match = regex.exec(line)) !== null) {
       if (match.index > lastIdx) parts.push(line.slice(lastIdx, match.index));
-      if (match[1]) {
+      if (match[1] !== undefined) {
         parts.push(<strong key={key++}>{match[1]}</strong>);
       } else if (match[2] && match[3]) {
         parts.push(<a key={key++} href={match[3]} target="_blank" rel="noreferrer" className="dex-inline-link">{match[2]}</a>);
