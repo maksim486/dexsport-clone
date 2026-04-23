@@ -113,6 +113,8 @@ export default function ChatWidget() {
     const userMsg: Message = { role: 'user', content: text, time: getTime() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
+    setInputFocused(false);
+    (document.activeElement as HTMLElement | null)?.blur();
     setLoading(true);
 
     const assistantMsg: Message = { role: 'assistant', content: '', time: getTime() };
@@ -254,7 +256,7 @@ export default function ChatWidget() {
 
           {/* Quick Buttons */}
           {(() => {
-            const showButtons = isWelcome || inputFocused;
+            const showButtons = !loading && (isWelcome || inputFocused);
             return (
               <div className={`dex-quick-btns ${showButtons ? 'dex-quick-btns--visible' : 'dex-quick-btns--hidden'}`}>
                 {quickButtons.map(btn => (
