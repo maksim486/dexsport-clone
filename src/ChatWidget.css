@@ -116,6 +116,17 @@
   height: 20px;
   object-fit: contain;
 }
+.dex-inline-link {
+  color: #c084fc;
+  text-decoration: underline;
+  text-decoration-color: rgba(192, 132, 252, 0.4);
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+.dex-inline-link:hover {
+  color: #e9d5ff;
+  text-decoration-color: #c084fc;
+}
 
 .dex-chat-name {
   font-weight: 700;

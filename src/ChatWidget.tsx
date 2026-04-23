@@ -22,6 +22,33 @@ function getTime() {
   return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 }
 
+function renderMarkdown(text: string): React.ReactNode {
+  const lines = text.split('\n');
+  return lines.map((line, lineIdx) => {
+    const parts: React.ReactNode[] = [];
+    const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+    let lastIdx = 0;
+    let match: RegExpExecArray | null;
+    let key = 0;
+    while ((match = regex.exec(line)) !== null) {
+      if (match.index > lastIdx) parts.push(line.slice(lastIdx, match.index));
+      if (match[1]) {
+        parts.push(<strong key={key++}>{match[1]}</strong>);
+      } else if (match[2] && match[3]) {
+        parts.push(<a key={key++} href={match[3]} target="_blank" rel="noreferrer" className="dex-inline-link">{match[2]}</a>);
+      }
+      lastIdx = match.index + match[0].length;
+    }
+    if (lastIdx < line.length) parts.push(line.slice(lastIdx));
+    return (
+      <React.Fragment key={lineIdx}>
+        {parts.length > 0 ? parts : line}
+        {lineIdx < lines.length - 1 && <br />}
+      </React.Fragment>
+    );
+  });
+}
+
 export default function ChatWidget() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
@@ -159,7 +186,7 @@ export default function ChatWidget() {
                     <div className="dex-msg-bot-icon"><img src={LOGO_SRC} alt="" className="dex-bot-icon-logo" /></div>
                   )}
                   <div className="dex-msg-bubble">
-                    {msg.content || (
+                    {msg.content ? renderMarkdown(msg.content) : (
                       <span className="dex-typing">
                         <span className="dex-typing-dot" />
                         <span className="dex-typing-dot" />

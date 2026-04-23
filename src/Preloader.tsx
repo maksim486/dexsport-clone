@@ -12,20 +12,15 @@ export default function Preloader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0c0713] transition-opacity duration-700 ${loading ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0c0713] transition-opacity duration-700 pointer-events-none ${loading ? 'opacity-100' : 'opacity-0'}`}
     >
-      <div
-        className="w-[180px] h-[180px] relative flex items-center justify-center rounded-full overflow-hidden"
-        style={{ background: 'radial-gradient(circle, rgba(138,76,255,0.25) 0%, transparent 70%)' }}
-      >
-        <div
-          className="w-[120px] h-[120px] rounded-[24px] flex items-center justify-center text-white font-bold text-[48px]"
-          style={{ background: 'linear-gradient(135deg, #8a4cff, #ff4dd8)', boxShadow: '0 8px 40px rgba(138,76,255,0.6)' }}
-        >
-          D
-        </div>
+      <div className="w-[300px] h-[300px] relative mt-[-100px]">
+        <object
+          data="/dexsport-clone/assets/preloader_logo.svg"
+          type="image/svg+xml"
+          className="w-full h-full pointer-events-none"
+        />
       </div>
-      <div className="mt-6 text-[#9c94c2] text-sm tracking-[0.2em] uppercase">Loading</div>
     </div>
   );
 }
