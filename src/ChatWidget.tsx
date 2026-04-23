@@ -86,9 +86,8 @@ export default function ChatWidget() {
   const [quickButtons, setQuickButtons] = useState(() =>
     pickRandom(ALL_QUICK_BUTTONS, 3, new Set(), b => b.text)
   );
-  const [atBottom, setAtBottom] = useState(true);
+  const [inputFocused, setInputFocused] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 3200);
@@ -97,16 +96,7 @@ export default function ChatWidget() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    const timer = setTimeout(() => setAtBottom(true), 400);
-    return () => clearTimeout(timer);
   }, [messages]);
-
-  const handleScroll = () => {
-    const el = messagesRef.current;
-    if (!el) return;
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    setAtBottom(distanceFromBottom < 120);
-  };
 
   if (!mounted) return null;
 
@@ -214,7 +204,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="dex-chat-messages" ref={messagesRef} onScroll={handleScroll}>
+          <div className="dex-chat-messages">
             {isWelcome && (
               <div className="dex-welcome">
                 <div className="dex-welcome-avatar"><img src={LOGO_SRC} alt="Dexsport" className="dex-welcome-logo" /></div>
@@ -265,18 +255,23 @@ export default function ChatWidget() {
           </div>
 
           {/* Quick Buttons */}
-          <div className={`dex-quick-btns ${atBottom ? 'dex-quick-btns--visible' : 'dex-quick-btns--hidden'}`}>
-            {quickButtons.map(btn => (
-              <button
-                key={btn.text}
-                className="dex-quick-btn"
-                onClick={() => sendMessage(btn.text)}
-                disabled={loading}
-              >
-                {btn.icon} {btn.text}
-              </button>
-            ))}
-          </div>
+          {(() => {
+            const showButtons = isWelcome || inputFocused;
+            return (
+              <div className={`dex-quick-btns ${showButtons ? 'dex-quick-btns--visible' : 'dex-quick-btns--hidden'}`}>
+                {quickButtons.map(btn => (
+                  <button
+                    key={btn.text}
+                    className="dex-quick-btn"
+                    onMouseDown={e => { e.preventDefault(); sendMessage(btn.text); }}
+                    disabled={loading}
+                  >
+                    {btn.icon} {btn.text}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
 
           {/* Input */}
           <div className="dex-chat-input-row">
@@ -286,6 +281,8 @@ export default function ChatWidget() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setTimeout(() => setInputFocused(false), 150)}
               disabled={loading}
             />
             <button
