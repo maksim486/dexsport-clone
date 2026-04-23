@@ -97,13 +97,15 @@ export default function ChatWidget() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const timer = setTimeout(() => setAtBottom(true), 400);
+    return () => clearTimeout(timer);
   }, [messages]);
 
   const handleScroll = () => {
     const el = messagesRef.current;
     if (!el) return;
     const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-    setAtBottom(distanceFromBottom < 60);
+    setAtBottom(distanceFromBottom < 120);
   };
 
   if (!mounted) return null;
