@@ -98,7 +98,7 @@ export default function ChatWidget() {
   };
 
   useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 3200);
+    const t = setTimeout(() => setMounted(true), 400);
     return () => clearTimeout(t);
   }, []);
 
