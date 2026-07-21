@@ -39,6 +39,18 @@ function pickRandom<T>(arr: T[], n: number, exclude: Set<string> = new Set(), ke
   return shuffled.slice(0, n);
 }
 
+async function fetchWithRetry(url: string, options: RequestInit, retries = 3, delayMs = 2500): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fetch(url, options);
+    } catch (err) {
+      if (attempt === retries) throw err;
+      await new Promise(r => setTimeout(r, delayMs));
+    }
+  }
+  throw new Error('unreachable');
+}
+
 function getTime() {
   return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 }
@@ -133,7 +145,7 @@ export default function ChatWidget() {
         .slice(-6)
         .map(m => ({ role: m.role, content: m.content }));
 
-      const resp = await fetch(`${AGENT_URL}/chat`, {
+      const resp = await fetchWithRetry(`${AGENT_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
