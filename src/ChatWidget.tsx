@@ -167,7 +167,14 @@ export default function ChatWidget() {
 
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
-          const data = JSON.parse(line.slice(6));
+          // Битый чанк не должен уводить нас в catch: там сообщение целиком
+          // заменяется на текст ошибки, т.е. уже полученный ответ пропадает
+          let data: any;
+          try {
+            data = JSON.parse(line.slice(6));
+          } catch {
+            continue;
+          }
           if (data.token) {
             setMessages(prev => {
               const updated = [...prev];
