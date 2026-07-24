@@ -518,18 +518,44 @@
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
+  /*
+   * На мобильном чат раскрываем во весь экран.
+   *
+   * Тут был баг: ширина задавалась как calc(100vw - 16px), но страница
+   * свёрстана под 1440px, поэтому на телефоне есть горизонтальный скролл,
+   * и 100vw в iOS Safari считается от ширины ДОКУМЕНТА, а не экрана.
+   * Виджет получался ~1424px и обрезался с обеих сторон: слева уезжала
+   * иконка, справа — кнопка закрытия и стрелка отправки.
+   *
+   * inset вместо width/right привязывает окно к вьюпорту, а не к контенту.
+   */
   .dex-chat-window {
-    width: calc(100vw - 16px);
-    right: 8px;
-    bottom: 80px;
-    max-height: calc(100vh - 100px);
-    border-radius: 20px;
+    inset: 0;
+    width: auto;
+    height: 100dvh;          /* dvh, а не vh: учитывает панель браузера и клавиатуру */
+    max-height: none;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    /* вырезы и «домашняя полоска» на iPhone */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .dex-chat-header {
+    padding-top: calc(12px + env(safe-area-inset-top, 0));
+  }
+  /* Пока чат открыт, плавающая кнопка не нужна — она перекрывала поле ввода */
+  .dex-chat-fab--open {
+    display: none;
   }
   .dex-chat-fab {
-    bottom: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0));
     right: 16px;
     width: 54px;
     height: 54px;
+  }
+  /* Длинные сообщения не должны распирать экран */
+  .dex-msg-bubble {
+    max-width: 85%;
   }
 }

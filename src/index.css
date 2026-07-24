@@ -30,18 +30,12 @@ body {
 }
 
 @media (max-width: 768px) {
-  /* Ensure chat widget stays responsive on mobile */
-  .dex-chat-window {
-    width: calc(100vw - 20px) !important;
-    right: 10px !important;
-    bottom: 76px !important;
-    max-height: 70vh !important;
-  }
-  .dex-chat-fab {
-    bottom: 16px !important;
-    right: 16px !important;
-    padding: 10px 16px !important;
-  }
+  /*
+   * Размеры чата на мобильном заданы в ChatWidget.css (там он раскрывается
+   * на весь экран). Раньше здесь дублировались width/right/bottom с
+   * !important — из-за них окно считало ширину от документа (страница
+   * свёрстана под 1440px) и обрезалось с обеих сторон на телефоне.
+   */
   .dex-fab-label {
     display: none;
   }

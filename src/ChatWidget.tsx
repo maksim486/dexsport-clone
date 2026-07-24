@@ -329,7 +329,10 @@ export default function ChatWidget() {
       )}
 
       {/* FAB */}
-      <button className="dex-chat-fab" onClick={() => setOpen(o => !o)}>
+      <button
+        className={`dex-chat-fab${open ? ' dex-chat-fab--open' : ''}`}
+        onClick={() => setOpen(o => !o)}
+      >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <path d="M18 6 6 18" /><path d="m6 6 12 12" />
