@@ -118,6 +118,25 @@ export default function ChatWidget() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // На iOS высота 100dvh пересчитывается с запозданием при появлении
+  // клавиатуры — окно чата оставалось прежней высоты, и поле ввода
+  // оказывалось под клавиатурой. visualViewport даёт реальную видимую
+  // высоту сразу, кладём её в CSS-переменную.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const apply = () => {
+      document.documentElement.style.setProperty('--dex-vvh', `${vv.height}px`);
+    };
+    apply();
+    vv.addEventListener('resize', apply);
+    vv.addEventListener('scroll', apply);
+    return () => {
+      vv.removeEventListener('resize', apply);
+      vv.removeEventListener('scroll', apply);
+    };
+  }, []);
+
   if (!mounted) return null;
 
   const handleInputFocus = () => {
@@ -290,7 +309,9 @@ export default function ChatWidget() {
                   <button
                     key={btn.text}
                     className="dex-quick-btn"
-                    onMouseDown={e => { e.preventDefault(); sendMessage(btn.text); }}
+                    /* pointerdown, а не mousedown: на тач-экранах mousedown
+                       эмулируется с задержкой и иногда теряется */
+                    onPointerDown={e => { e.preventDefault(); sendMessage(btn.text); }}
                     disabled={loading}
                   >
                     {btn.icon} {btn.text}
@@ -314,7 +335,17 @@ export default function ChatWidget() {
             />
             <button
               className="dex-chat-send"
-              onClick={() => sendMessage(input)}
+              /*
+               * На iOS первый тап по кнопке при активном поле уходил на снятие
+               * фокуса (клавиатура закрывается, DOM перерисовывается) — click
+               * терялся, и отправлять приходилось дважды. Перехватываем
+               * pointerdown до потери фокуса и гасим её preventDefault.
+               */
+              onPointerDown={e => {
+                e.preventDefault();
+                if (!loading && input.trim()) sendMessage(input);
+              }}
+              onClick={e => e.preventDefault()}
               disabled={loading || !input.trim()}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

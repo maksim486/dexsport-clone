@@ -198,6 +198,16 @@
   flex-direction: column;
   gap: 14px;
   scroll-behavior: smooth;
+  /*
+   * iOS: без inertia-скролла лента ловила палец только у самого края.
+   * min-height: 0 обязателен — flex-элемент по умолчанию не сжимается
+   * ниже своего контента, из-за чего область скролла «схлопывалась»
+   * и тач-зона оставалась только по краю.
+   */
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+  overscroll-behavior: contain;   /* скролл не «протекает» на страницу под чатом */
+  touch-action: pan-y;
 }
 .dex-chat-messages::-webkit-scrollbar { width: 4px; }
 .dex-chat-messages::-webkit-scrollbar-track { background: transparent; }
@@ -455,6 +465,11 @@
 
 .dex-chat-input {
   flex: 1;
+  /*
+   * min-width: 0 — иначе flex-элемент не сжимается ниже ширины своего
+   * содержимого и выдавливает кнопку отправки за край экрана.
+   */
+  min-width: 0;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
@@ -464,6 +479,17 @@
   outline: none;
   font-family: inherit;
   transition: all 0.25s ease;
+}
+/*
+ * iOS Safari автоматически зумит страницу при фокусе в поле, если шрифт
+ * мельче 16px. Из-за этого при открытии клавиатуры вёрстка разъезжалась:
+ * кнопка отправки уходила за правый край. 16px — минимум, при котором
+ * зума не происходит.
+ */
+@supports (-webkit-touch-callout: none) {
+  .dex-chat-input {
+    font-size: 16px;
+  }
 }
 .dex-chat-input::placeholder {
   color: rgba(255, 255, 255, 0.3);
@@ -533,7 +559,9 @@
   .dex-chat-window {
     inset: 0;
     width: auto;
-    height: 100dvh;          /* dvh, а не vh: учитывает панель браузера и клавиатуру */
+    /* --dex-vvh задаётся из JS по visualViewport: на iOS dvh обновляется
+       с запозданием, и при появлении клавиатуры поле ввода уезжало под неё */
+    height: var(--dex-vvh, 100dvh);
     max-height: none;
     border-radius: 0;
     border-left: none;
