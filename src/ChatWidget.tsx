@@ -69,8 +69,14 @@ function getTime() {
  * Всё, что не dexsport.io, показываем обычным текстом: видно, но не кликается.
  */
 function isTrustedUrl(href: string): boolean {
+  // Разбираем БЕЗ базового URL — только абсолютный адрес. Иначе относительный
+  // «/casino/games/crash/» прошёл бы проверку (достроился бы от dexsport.io),
+  // а в браузере раскрылся от адреса страницы, где стоит виджет, и дал битую
+  // ссылку. Заодно так отсекается пустая строка: с базой она разворачивалась
+  // в сам dexsport.io и считалась доверенной.
+  // Инструмент всегда присылает полный адрес, так что ничего не теряем.
   try {
-    const u = new URL(href, 'https://dexsport.io');
+    const u = new URL(href);
     return u.protocol === 'https:' &&
       (u.hostname === 'dexsport.io' || u.hostname.endsWith('.dexsport.io'));
   } catch {
