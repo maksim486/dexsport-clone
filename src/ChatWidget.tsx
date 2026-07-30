@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ChatWidget.css';
 
-const AGENT_URL = import.meta.env.VITE_AGENT_URL || 'https://drippy-pasta-amaze.ngrok-free.dev';
+// Адрес бэкенда задаётся при сборке через VITE_AGENT_URL (.env.local, в git нет).
+// Дефолта намеренно нет: раньше здесь висел адрес старого ngrok-туннеля, на
+// который давно переехали с Cloudflare, и при забытой переменной сборка молча
+// уходила стучаться в мёртвый хост. Пустая строка даст видимую ошибку сразу.
+const AGENT_URL = import.meta.env.VITE_AGENT_URL || '';
 const LOGO_SRC = '/dexsport-clone/assets/dexsport-d-logo.svg?v=2';
 
 interface Message {
@@ -55,6 +59,25 @@ function getTime() {
   return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 }
 
+/**
+ * Кликабельными делаем только ссылки на сам Dexsport.
+ *
+ * Промпт требует от модели брать адреса исключительно из результата
+ * инструмента, но это защита на уровне инструкции, а не кода. Для спортивных
+ * ответов модель ходит в открытый веб-поиск, и страница оттуда может содержать
+ * внедрённую инструкцию — тогда чужой адрес доехал бы до чата готовой ссылкой.
+ * Всё, что не dexsport.io, показываем обычным текстом: видно, но не кликается.
+ */
+function isTrustedUrl(href: string): boolean {
+  try {
+    const u = new URL(href, 'https://dexsport.io');
+    return u.protocol === 'https:' &&
+      (u.hostname === 'dexsport.io' || u.hostname.endsWith('.dexsport.io'));
+  } catch {
+    return false;
+  }
+}
+
 function renderMarkdown(text: string): React.ReactNode {
   // Join split markdown links: ]\n( → ](  and force correct domain
   const normalized = text
@@ -74,7 +97,11 @@ function renderMarkdown(text: string): React.ReactNode {
       if (match[1] !== undefined) {
         parts.push(<strong key={key++}>{match[1]}</strong>);
       } else if (match[2] && match[3]) {
-        parts.push(<a key={key++} href={match[3]} target="_blank" rel="noreferrer" className="dex-inline-link">{match[2]}</a>);
+        parts.push(
+          isTrustedUrl(match[3])
+            ? <a key={key++} href={match[3]} target="_blank" rel="noreferrer" className="dex-inline-link">{match[2]}</a>
+            : <span key={key++}>{match[2]}</span>
+        );
       }
       lastIdx = match.index + match[0].length;
     }
@@ -166,14 +193,19 @@ export default function ChatWidget() {
 
       const resp = await fetchWithRetry(`${AGENT_URL}/chat`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': '1',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, history }),
       });
 
-      const reader = resp.body!.getReader();
+      // fetchWithRetry ловит только обрыв соединения. Если бэкенд ответил
+      // 500/502/503 (например, идёт передеплой), fetch резолвится нормально —
+      // и мы бы начали парсить как SSE страницу ошибки или пустое тело, а
+      // человек увидел бы тишину вместо внятного сообщения.
+      if (!resp.ok || !resp.body) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+
+      const reader = resp.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
 
@@ -209,7 +241,7 @@ export default function ChatWidget() {
               const updated = [...prev];
               updated[updated.length - 1] = {
                 ...updated[updated.length - 1],
-                sources: data.sources.filter((s: any) => s.url),
+                sources: data.sources.filter((s: any) => s.url && isTrustedUrl(s.url)),
               };
               return updated;
             });
